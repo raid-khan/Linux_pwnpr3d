@@ -57,12 +57,12 @@ public abstract class Computer extends Machine {
       return hypervisor;
    }
 
-   public XenHypervisor newXenHypervisor(String name) {
-      XenHypervisor hypervisor = new XenHypervisor(name, this);
-      hyperVisorsType1.add(hypervisor);
-      own(hypervisor);
-      return hypervisor;
-   }
+   //public XenHypervisor newXenHypervisor(String name) {
+     // XenHypervisor hypervisor = new XenHypervisor(name, this);
+      //hyperVisorsType1.add(hypervisor);
+      //own(hypervisor);
+      //return hypervisor;
+   //}
 
    public void addOS(OperatingSystem os) {
       operatingSystems.add(os);
