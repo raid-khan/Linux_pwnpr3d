@@ -50,32 +50,32 @@ public class NetworkZone {
     }
 
 
-    public OperatingSystem newWindows2008Server(String name) {
-        HardwareComputer hc = new HardwareComputer(name+"HC");
-        Windows2008Server os = new Windows2008Server(name,hc);
-        operatingSystems.add(os);
-        computers.add(hc);
-        connect(os);
-        return os;
-    }
+//    public OperatingSystem newWindows2008Server(String name) {
+//        HardwareComputer hc = new HardwareComputer(name+"HC");
+  //      Windows2008Server os = new Windows2008Server(name,hc);
+    //    operatingSystems.add(os);
+      //  computers.add(hc);
+//        connect(os);
+ //       return os;
+  //  }
 
-    public OperatingSystem newWindows7(String name) {
-        HardwareComputer hc = new HardwareComputer(name+"HC");
-        Windows7 os = new Windows7(name,hc);
-        operatingSystems.add(os);
-        computers.add(hc);
-        connect(os);
-        return os;
-    }
+//    public OperatingSystem newWindows7(String name) {
+ //       HardwareComputer hc = new HardwareComputer(name+"HC");
+ //       Windows7 os = new Windows7(name,hc);
+  //      operatingSystems.add(os);
+//        computers.add(hc);
+ //       connect(os);
+  //      return os;
+//    }
 
-    public OperatingSystem newVXWorks65(String name) {
-        HardwareComputer hc = new HardwareComputer(name+"HC");
-        VXWorks65 os = new VXWorks65(name,hc);
-        operatingSystems.add(os);
-        computers.add(hc);
-        connect(os);
-        return os;
-    }
+  //  public OperatingSystem newVXWorks65(String name) {
+//        HardwareComputer hc = new HardwareComputer(name+"HC");
+ //       VXWorks65 os = new VXWorks65(name,hc);
+  //      operatingSystems.add(os);
+//        computers.add(hc);
+ //       connect(os);
+  //      return os;
+//    }
 
     public DatabaseServer newDatabase(String name, OperatingSystem os) {
         DatabaseServer db = new DatabaseServer("scadaDatabase", os, os.getUserAccount("admin"));
