@@ -4,7 +4,8 @@
 The aim of this project is to develop a model of a linux distribution and analyse the system architecture in pwnpr3d for the following threats:
 
 1. ARP spoofing
-2. Password brute forcing
+2. Denial of services
+3. Password brute forcing
 3. Encryption brute forcing
 4. Buffer overflows
 5. Privilege escalation
@@ -12,7 +13,6 @@ The aim of this project is to develop a model of a linux distribution and analys
 7. Man in the browser
 8. Remote Access Trojan
 9. Ransomware
-10. Denial of servides
 
 
 ##The Linux Model
