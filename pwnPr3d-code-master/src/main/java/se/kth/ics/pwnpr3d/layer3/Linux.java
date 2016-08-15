@@ -12,9 +12,6 @@ import se.kth.ics.pwnpr3d.layer2.network.EthernetSwitch;
 import se.kth.ics.pwnpr3d.layer2.network.Firewall;
 import se.kth.ics.pwnpr3d.layer2.network.Router;
 import se.kth.ics.pwnpr3d.layer2.network.networkInterfaces.IPEthernetARPNetworkInterface;
-import se.kth.ics.pwnpr3d.layer2.network.protocolImplementations.ARPImplementation;
-import se.kth.ics.pwnpr3d.layer2.network.protocolImplementations.EthernetImplementation;
-import se.kth.ics.pwnpr3d.layer2.network.protocolImplementations.IPImplementation;
 import se.kth.ics.pwnpr3d.layer2.software.Application;
 import se.kth.ics.pwnpr3d.layer2.software.NetworkedApplication;
 import se.kth.ics.pwnpr3d.layer2.software.OperatingSystem;
@@ -23,22 +20,29 @@ import se.kth.ics.pwnpr3d.layer2.software.WebServer;
 
 public class Linux extends OperatingSystem {
 
-    private NetworkedApplication ssh;
-    private EthernetSwitch ethernetSwitch;
-    private Router ipRouter;
-    private Firewall firewall;
-    private WebServer webServer;
-    private WebApplication config;
-    private WebApplication test;
-    private WebApplication wheaterStyle;
-    private WebApplication index;
-
+    public NetworkedApplication ssh;
+    public EthernetSwitch ethernetSwitch;
+    public Router ipRouter;
+    public Firewall firewall;
+    public WebServer webServer;
+    public WebApplication config;
+    public WebApplication test;
+    public WebApplication wheaterStyle;
+    public WebApplication index;
+    public IPEthernetARPNetworkInterface ipNetIface;
+    public Account alice;
+    public Account bob;
+    public Data etc;
+    public Data password;
+    
     public Linux(String name, Computer computer) {
         super(name, computer);
         
+        vulnerabilityDiscoveryTheta = 102;
+        
         //we have two example accounts
-        Account alice = super.newUserAccount("Alice", PrivilegeType.User);
-        Account bob = super.newUserAccount("Bob", PrivilegeType.User);
+        alice = super.newUserAccount("Alice", PrivilegeType.User);
+        bob = super.newUserAccount("Bob", PrivilegeType.User);
 
         //you could access the Linux machine through ssh
         ssh = this.newNetworkedApplication("SSH", PrivilegeType.User, ProtocolType.TCP, false, false); 
@@ -67,7 +71,7 @@ public class Linux extends OperatingSystem {
         getAdministrator().addAuthorizedReadWrite(usr);
         
         //the etc directory
-        Data etc = new Data("etc", false);
+        etc = new Data("etc", false);
 		Set<Data> etcData = new HashSet<Data>();
         etcData.add(new Data("ldap", false));
         etcData.add(new Data("crontab", false));
@@ -76,7 +80,7 @@ public class Linux extends OperatingSystem {
         etcData.add(new Data("rc.d", false));
         etcData.add(new Data("calendar", false));
         //the password file
-        Data password = new Data("password", true);
+        password = new Data("password", true);
         etcData.add(password);
         //application that checks is a user have access to a resource 
         Application accessList = this.newApplication("Access List", PrivilegeType.Administrator, false);
@@ -117,6 +121,7 @@ public class Linux extends OperatingSystem {
 		bob.addAuthorizedAccess(grep);
 		getAdministrator().addAuthorizedAccess(grep);
 		bin.addRequiredAgent(grep);
+		this.addOwnedData(etc);
 		
 		//the application mount
 		Application mount = this.newApplication("mount", PrivilegeType.Administrator, false);
@@ -132,7 +137,7 @@ public class Linux extends OperatingSystem {
 		bob.addAuthorizedRead(sbin);
 		getAdministrator().addAuthorizedReadWrite(sbin);
 
-		//the mnt folder
+		//the nnt folder
 		Data mnt = new Data("mnt", false);
 		Set<Data> mntDevices = new HashSet<Data>();
 		mntDevices.add(new Data("cd-rom", false));
@@ -178,27 +183,9 @@ public class Linux extends OperatingSystem {
 		super.getAdministrator().addAuthorizedAccess(wheaterStyle);
 		super.getAdministrator().addAuthorizedAccess(index);
 
-		//the switch
-		ethernetSwitch = new EthernetSwitch("EthernetSwicth");
-		//the router
-		ipRouter = new Router("Router");
-		ipRouter.connect(this, ethernetSwitch);
-		//the firewall
-		firewall = new Firewall("Firewall");
-		firewall.connect(ipRouter, true);
-		ethernetSwitch.connect(firewall);
-		//the interface and the protocols
-		IPEthernetARPNetworkInterface ipNetIface = new IPEthernetARPNetworkInterface("IPFACE", computer, 0.3);
-		EthernetImplementation networkProtocols = new EthernetImplementation("NetworkProtocols", ipNetIface);
-		IPImplementation tcpIP = new IPImplementation("TCP/IP", ipNetIface);
-		tcpIP.logicalConnect(networkProtocols);
-		ARPImplementation arpImplementation = new ARPImplementation("ARPImplementation", ipNetIface, networkProtocols, 0.3);
-		arpImplementation.logicalConnect(networkProtocols);
-		Data ARPTable = new Data("ARPTable", true);
-		arpImplementation.addOwnedData(ARPTable);
-		firewall.addOwnedData(ARPTable);
-		networkProtocols.logicalConnect(firewall);
-		networkProtocols.logicalConnect(ssh);
+		//Ethernet network interface of the linux machine
+		ipNetIface = new IPEthernetARPNetworkInterface("LINUX-NETWORK-INTERFACE", computer, 100);
+		
 	}
 
 }
