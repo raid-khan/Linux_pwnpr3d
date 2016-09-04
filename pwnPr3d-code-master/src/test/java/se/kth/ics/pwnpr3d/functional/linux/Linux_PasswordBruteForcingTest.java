@@ -28,6 +28,17 @@ import se.kth.ics.pwnpr3d.util.TestSupport;
  * for aggressor to figure the secret key, and attacks will take an excess of time
  */
 
+/*
+ * The attacker get access to the compromised password text file and un-encrypt
+ * the user passwords file using brute force. The acces to the file is made through
+ * a compromised user account with the rights to access the password file.
+ */
+
+/*
+ * The main problem faced here is to get access to the password file and to do that
+ * the attacker compromises the alice user account and then reading the password file
+ */
+
 public class Linux_PasswordBruteForcingTest {
 	
 	@Test
