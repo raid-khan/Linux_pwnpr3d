@@ -19,6 +19,27 @@ import se.kth.ics.pwnpr3d.util.TestSupport;
  * in the endeavor: 
  */
 
+/*
+ * In this test the attacker uses a compromised application to get access to the private
+ * data of other application.
+ * In these tests we try to simulate and show how an attacker could get access
+ * to the information on a Linux machine using different techniques to get access to the system.
+ * These techniques could exploit some vulnerability on the components of the system and
+ * can also exploit a naïve user that could compromise its access to the system,
+ * compromising with these actions the entire system. The motivation of the attacker
+ * could be different on each attack and the results of these attacks depends on the
+ * target of the attacker.
+ */
+
+/*
+ * The main problem faced here is simulate an application that have a
+ * malicious behavior take access of the private data of other application
+ * in the operative system so the first application compromises an user
+ * account and the take the data of other application on the same user 
+ * 
+ */
+
+
 public class Linux_SandBoxEscapeTest {
 
 	@Test
@@ -41,8 +62,11 @@ public class Linux_SandBoxEscapeTest {
         attacker.addAttackPoint(app2.getAccess());
         //the attacker compromise the user of the second application
         attacker.addAttackPoint(app2.getGuest().getCompromise());
+        attacker.addAttackPoint(linuxHost.getAccess());
+        attacker.addAttackPoint(linuxHost.getAdministrator().getCompromise());
         //perform the attack generating graphs
         attacker.attackWithTTC();
+        
         //test the compromised app1 access
         TestSupport.assertCompromised(app1.getAccess());
         //test the compromised guest user
@@ -55,6 +79,10 @@ public class Linux_SandBoxEscapeTest {
         TestSupport.assertCompromised(app2.getGuest().getCompromise());
         //test the compromised app2
         TestSupport.assertCompromised(app2.getCompromise());
+        //the linux machine gets compromised by the attack
+        TestSupport.assertCompromised(linuxHost.getCompromise());
+        //the administrator account gets compromised
+        TestSupport.assertCompromised(linuxHost.getAdministrator().getCompromise());
         
     }
 
