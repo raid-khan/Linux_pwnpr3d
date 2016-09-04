@@ -25,6 +25,19 @@ import se.kth.ics.pwnpr3d.util.TestSupport;
  * Windows it goes about as a SOCKS4/5 server too. 
  */
 
+/*
+ * The attacker get access to the system using a vulnerability then using an
+ * spoofed identity drops a malicious application to get access to the linux machine.
+ */
+
+/*
+ * the main problem here is to simulate the behavior of a trojan
+ * in this case the attacker uses a compromised network application to drop
+ * a trojan server into the machine then the trojan server gets control of the
+ * linux machine 
+ * 
+ */
+
 public class Linux_RemoteAccessTrojanTest {
 
 	@Test
