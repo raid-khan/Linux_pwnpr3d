@@ -26,6 +26,17 @@ import se.kth.ics.pwnpr3d.util.TestSupport;
  * the more it can prolong to break. 
  */
 
+/*
+ * In this test the attacker tries to un-encrypt the packages on a compromised
+ * switch using a brute force attack to read the encrypted data.
+ */
+
+/*
+ * The main problem faced here is to connect to the switch and try to brute
+ * force the encrypted packages. To do that the attacker gets access to the
+ * admin account in the switch and then the attacker get the messages to decript them
+ *  
+*/
 public class Linux_EncryptionBruteForceTest {
 
     @Test
