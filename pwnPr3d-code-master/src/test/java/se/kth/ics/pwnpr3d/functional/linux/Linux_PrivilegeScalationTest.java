@@ -19,6 +19,17 @@ import se.kth.ics.pwnpr3d.util.TestSupport;
  * from an application or user.
  */
 
+/*
+ * In this test the attacker get access to the administrator account through
+ * a compromised user account, spoofing the administrator and compromising the entire system.
+ */
+
+/*
+ * The main problem faced here is to use a guest account to access the administrator
+ * account. With this account the attacker spoof the administrator account to get administrator
+ * privileges
+ */
+
 public class Linux_PrivilegeScalationTest {
 
 	@Test
