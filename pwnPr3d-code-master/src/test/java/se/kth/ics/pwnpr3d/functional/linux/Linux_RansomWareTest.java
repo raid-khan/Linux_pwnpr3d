@@ -22,6 +22,19 @@ import se.kth.ics.pwnpr3d.util.TestSupport;
  * and even the product introduced on the server, prisoner.
  */
 
+/*
+ * With this test the attacker get access in a compromised account and then make
+ * a denial of service on the entire system.
+ */
+
+/*
+ * The main problem here is to model a ransomware attack and basically a ransonmware 
+ * drops a a malevolent software on the linux machine and this malevolent software
+ * make a denial of service of the entire system to force the user to make a payment
+ * with the promise to liberate the hostage machine.
+ * 
+ */
+
 public class Linux_RansomWareTest {
 
 	@Test
