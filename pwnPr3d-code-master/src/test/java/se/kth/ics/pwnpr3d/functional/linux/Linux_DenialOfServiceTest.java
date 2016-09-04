@@ -22,6 +22,21 @@ import se.kth.ics.pwnpr3d.util.TestSupport;
  * of a host connected to the Internet.
  */
 
+/*
+ * This test tries to simulate a denial of service on the router of the 
+ * network using a compromised ip interface with flooded packages 
+ * from the Linux machine.
+ */
+
+/*
+ * The main problem faced here is to block the router with a DOS attack
+ * and to do that the attacker get access to the linux machine and proceed
+ * to send flooded packages to the router until it causes the denial of
+ * service in the router, the linux machine sends datashell messages 
+ * to the router until get a DOS from the router because it can't process
+ * all these packages 
+ */
+
 public class Linux_DenialOfServiceTest {
 
 	@Test
@@ -54,14 +69,21 @@ public class Linux_DenialOfServiceTest {
         //we create a new attacker
         Attacker attacker = new Attacker();
         //we add an attack point in the router using a DOS vulnerability
+        attacker.addAttackPoint(router.getAccess());
+        attacker.addAttackPoint(router.getAdministrator().getCompromise());
         attacker.addAttackPoint(router.getDenyService());
+        attacker.addAttackPoint(linuxHost.getAccess());
+        attacker.addAttackPoint(linuxHost.getCompromise());
+        attacker.addAttackPoint(linuxHost.getIPEthernetARPNetworkInterface().getAuthorized());
         //we attack generating graphs
         attacker.attackWithTTC();
 
         //we test the availability of the information after the attack
         TestSupport.assertCompromised(information.getAvailabilityBreach());
-	    
-	    
+        TestSupport.assertCompromised(router.getCompromise());
+        TestSupport.assertCompromised(router.getDenyService());
+        TestSupport.assertCompromised(linuxHost.getIPEthernetARPNetworkInterface().getCompromise());
+        TestSupport.assertCompromised(linuxHost.getCompromise());
 	}
 
     @After
