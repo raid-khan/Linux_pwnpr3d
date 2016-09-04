@@ -29,6 +29,17 @@ import se.kth.ics.pwnpr3d.util.TestSupport;
  * programs display distinctive vulnerabilities that can be effectively abused
  * by a system written in JavaScript or comparative scripting dialect.
  */
+/*
+ * In this test a malevolent server drops evil scripts on the browser to compromise
+ * the security of the network interface and get access and sniff the http traffic
+ * over the compromised ip interface.
+ */
+
+/*
+ * The main problem faced here is to compromise the browser of the linux host
+ * to do that the attacker uses an html server to get access to the firefox browser
+ * then compromise the admin account using the firefox browser
+ */
 
 public class Linux_ManInTheBrowserTest {
 
