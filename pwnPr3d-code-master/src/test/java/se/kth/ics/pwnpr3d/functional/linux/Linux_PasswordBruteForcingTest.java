@@ -6,6 +6,7 @@ import org.junit.Test;
 import se.kth.ics.pwnpr3d.layer0.Asset;
 import se.kth.ics.pwnpr3d.layer0.AttackStep;
 import se.kth.ics.pwnpr3d.layer0.Attacker;
+import se.kth.ics.pwnpr3d.layer1.Vulnerability;
 import se.kth.ics.pwnpr3d.layer2.computer.HardwareComputer;
 import se.kth.ics.pwnpr3d.layer3.Linux;
 import se.kth.ics.pwnpr3d.util.TestSupport;
@@ -28,34 +29,39 @@ import se.kth.ics.pwnpr3d.util.TestSupport;
  * for aggressor to figure the secret key, and attacks will take an excess of time
  */
 
-/*
+ /*
  * The attacker get access to the compromised password text file and un-encrypt
  * the user passwords file using brute force. The acces to the file is made through
  * a compromised user account with the rights to access the password file.
  */
 
-/*
+ /*
  * The main problem faced here is to get access to the password file and to do that
  * the attacker compromises the alice user account and then reading the password file
  */
-
 public class Linux_PasswordBruteForcingTest {
-	
-	@Test
-	public void testPasswordBruteForcing(){
-		//create a new computer
-		HardwareComputer computer = new HardwareComputer("LINUX_MACHINE_PASSWORD_TEST");
-		//create a new Linux host
-		Linux linuxHost = new Linux("LINUX_HOST_PASSWORD_TEST", computer);
-		//create a new attacker
+
+    @Test
+    public void testPasswordBruteForcing() {
+        //create a new computer
+        HardwareComputer computer = new HardwareComputer("LINUX_MACHINE_PASSWORD_TEST");
+        //create a new Linux host
+        Linux linuxHost = new Linux("LINUX_HOST_PASSWORD_TEST", computer);
+        //create a new attacker
+
+        //We create the vulnerability
+        Vulnerability spoofedIdentity = new Vulnerability("SpoofedIdentity-Vulnerability", linuxHost);
+        //we add the memory to the vulnerability
+        spoofedIdentity.addSpoofedIdentity(linuxHost.alice);
+        //we add the vulnerability to the networked application
+        linuxHost.bob.addVulnerability(spoofedIdentity);
+
         Attacker attacker = new Attacker();
         //add an attack point the Linux host
         attacker.addAttackPoint(linuxHost.getAccess());
         //attack the compromised administrator
-        attacker.addAttackPoint(linuxHost.getAdministrator().getCompromise());
+        //attacker.addAttackPoint(linuxHost.getAdministrator().getCompromise());
         //attack the compromised Alice user
-        attacker.addAttackPoint(linuxHost.alice.getCompromise());
-        //attack the compromised Bob user
         attacker.addAttackPoint(linuxHost.bob.getCompromise());
         //perform the attack
         attacker.attackWithTTC();
@@ -67,12 +73,14 @@ public class Linux_PasswordBruteForcingTest {
         TestSupport.assertCompromised(linuxHost.etc.getBody().iterator().next().getCompromiseRead());
         //test the read the of the compromised password file
         TestSupport.assertCompromised(linuxHost.password.getCompromiseRead());
-		
-	}
-	
+        //test the read the of the compromised shadow file
+        TestSupport.assertCompromised(linuxHost.shadow.getCompromiseRead());
+
+    }
+
     @After
     public void emptySets() {
-    	//clear the tests data after the tests executes
+        //clear the tests data after the tests executes
         Asset.clearAllAssets();
         AttackStep.clearAllAttackSteps();
     }
