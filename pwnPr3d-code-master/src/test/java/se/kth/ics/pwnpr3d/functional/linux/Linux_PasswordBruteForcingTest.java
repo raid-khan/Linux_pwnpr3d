@@ -30,14 +30,22 @@ import se.kth.ics.pwnpr3d.util.TestSupport;
  */
 
  /*
- * The attacker get access to the compromised password text file and un-encrypt
- * the user passwords file using brute force. The acces to the file is made through
- * a compromised user account with the rights to access the password file.
+ The attacker get access to the compromised password text file and 
+ un-encrypt the user passwords file using brute force.
+ The acces to the file is made through a compromised user account
+ with the rights to access the password file.
+ to do this the attacker must have access to a standard user account
+ on the linux system this attacker uses a vulnerability present in the
+ alice user account to get access to the password and the shadow file
+ of the linux machine
  */
 
  /*
- * The main problem faced here is to get access to the password file and to do that
- * the attacker compromises the alice user account and then reading the password file
+The main problem faced here is to get access to the password file
+and to do that the attacker uses the bob user account to compromise
+the alice user account and then reading the password and shadow file.
+to perform the brute force attack on that file.
+We solve this problem compromising the bob user account from the beginning
  */
 public class Linux_PasswordBruteForcingTest {
 
