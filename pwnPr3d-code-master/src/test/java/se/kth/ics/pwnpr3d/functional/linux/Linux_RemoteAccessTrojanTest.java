@@ -31,10 +31,13 @@ import se.kth.ics.pwnpr3d.util.TestSupport;
  */
 
  /*
- * the main problem here is to simulate the behavior of a trojan
- * in this case the attacker uses a compromised network application to drop
- * a trojan server into the machine then the trojan server gets control of the
- * linux machine 
+the main problem here is to simulate the behavior of a trojan
+We solve this problem
+using a compromised user account to drop a trojan server into 
+the machine getting advantage of a vulnerability in the user
+account, then the trojan server gets control of the user account,
+this not mean that the trojan server get control or compromise the
+root account but bob account gets compromised
  * 
  */
 public class Linux_RemoteAccessTrojanTest {
@@ -49,9 +52,10 @@ public class Linux_RemoteAccessTrojanTest {
         NetworkedApplication trojanServer = linuxHost.newNetworkedApplication("Trojan server", PrivilegeType.User, ProtocolType.TCP, false, true);
         //the trojan server create a vulnerability 
         Vulnerability trojanVuln = new Vulnerability("Trojan_Vuln", trojanServer, ImpactType.High);
-        //add a vulnerability dropped by the trojan server in a guest user
-        trojanServer.getUser().addVulnerability(trojanVuln);
+        //add a vulnerability dropped by the trojan server in bob user
+        linuxHost.bob.addVulnerability(trojanVuln);
         //the trojan server spoof the administrator identity
+        //in this case trojan server administrator is bob
         trojanVuln.addSpoofedIdentity(trojanServer.getAdministrator());
         //create an attacker
         Attacker attacker = new Attacker();
@@ -59,6 +63,7 @@ public class Linux_RemoteAccessTrojanTest {
         attacker.addAttackPoint(trojanServer.getAccess());
         //the attacker attacks the guest user used by the trojan server
         attacker.addAttackPoint(trojanServer.getUser().getCompromise());
+        //the trojan server compromises the bob account
         attacker.addAttackPoint(linuxHost.bob.getCompromise());
         //perform the attack
         attacker.attackWithTTC();
