@@ -30,7 +30,15 @@ import se.kth.ics.pwnpr3d.util.TestSupport;
  * interface, that causes a buffer overflow.
  */
 
- /*
+/*
+What we have to achieve:
+Here we want to simulate a buffer overflow attack in a networked
+application that have a vulnerability CWE120, this vulnerability
+copy in the buffer of the application whitout checking the size and
+thats the reason that the attacker causes the buffer overflows 
+*/ 
+
+/*
  * The main problem faced here is to flood the network interface with packages
  * These packages must be written by the attacker and to do that we create a data
  * Associated with a networked application then the attacker get permission to write
@@ -38,6 +46,11 @@ import se.kth.ics.pwnpr3d.util.TestSupport;
  * and causes a buffer overflows in the data buffer, crashing the application and the
  * linux machine 
  */
+
+/*
+We solve this problem creating an attacker that send packages to the networked
+application until get the exploit. 
+*/
 public class Linux_BufferOverflowsTest {
 
     @Test
@@ -74,13 +87,13 @@ public class Linux_BufferOverflowsTest {
         attacker.addAttackPoint(linuxHost.getAuthorized());
         //The attacker compromises the users
         attacker.addAttackPoint(linuxHost.users.getCompromise());
-        //The attacker deny the service of the networked application
+        //The attacket deny the service of the networked application
         attacker.addAttackPoint(nettcpApp.getDenyService());
         //the attacker deny the service of the linux host
         attacker.addAttackPoint(linuxHost.getDenyService());
         //the ip network interface of the linux host get compromised
         attacker.addAttackPoint(linuxHost.getIPEthernetARPNetworkInterface().getCompromise());
-        //the attacker attacks
+        //the attacker attack
         attacker.attackWithTTC();
 
         //we test the compromised linux host
