@@ -14,6 +14,7 @@ import se.kth.ics.pwnpr3d.layer1.Information;
 import se.kth.ics.pwnpr3d.layer1.Message;
 import se.kth.ics.pwnpr3d.layer1.Vulnerability;
 import se.kth.ics.pwnpr3d.layer2.computer.HardwareComputer;
+import se.kth.ics.pwnpr3d.layer2.cwe.CWE326;
 import se.kth.ics.pwnpr3d.layer2.network.EthernetSwitch;
 import se.kth.ics.pwnpr3d.layer2.network.Router;
 import se.kth.ics.pwnpr3d.layer3.Linux;
@@ -29,15 +30,20 @@ import se.kth.ics.pwnpr3d.util.TestSupport;
  */
 
  /*
- * In this test the attacker tries to un-encrypt the packages on a compromised
- * switch using a brute force attack to read the encrypted data.
+ What we have to achieve
+ In this test the attacker uses a vulnerability to decrypt 
+ the packages on a switch using a brute force attack to read
+ the encrypted data.
  */
 
  /*
- * The main problem faced here is to connect to the switch and try to brute
- * force the encrypted packages. To do that the attacker gets access to the
- * admin account in the switch and then the attacker get the messages to decript them
- *  
+ The main problem faced here is to connect to the switch and try to brute
+ force the encrypted packages. To do that the attacker gets access to the
+ admin account in the switch and then the attacker get the messages
+ to decrypt them.
+ we can solve this using a vulnerability in this case CWE326 that is
+ inadequate encryption strenght that permits a sussesfull brute force
+ attack
  */
 public class Linux_EncryptionBruteForceTest {
 
@@ -69,7 +75,7 @@ public class Linux_EncryptionBruteForceTest {
         //send the message over the network
         linuxHost.getIPEthernetARPNetworkInterface().sendMessage(message);
         //We create the vulnerability
-        Vulnerability vulnerability = new Vulnerability("Switch Vulnerability", ethSwitch);
+        Vulnerability vulnerability = new CWE326(ethSwitch);
         //we add the data to the vulnerability
         vulnerability.addReadableData(encryptedData);
         //the user of the switch
