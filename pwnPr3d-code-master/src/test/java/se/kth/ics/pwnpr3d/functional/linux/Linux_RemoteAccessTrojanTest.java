@@ -25,50 +25,51 @@ import se.kth.ics.pwnpr3d.util.TestSupport;
  * Windows it goes about as a SOCKS4/5 server too. 
  */
 
-/*
+ /*
  * The attacker get access to the system using a vulnerability then using an
  * spoofed identity drops a malicious application to get access to the linux machine.
  */
 
-/*
+ /*
  * the main problem here is to simulate the behavior of a trojan
  * in this case the attacker uses a compromised network application to drop
  * a trojan server into the machine then the trojan server gets control of the
  * linux machine 
  * 
  */
-
 public class Linux_RemoteAccessTrojanTest {
 
-	@Test
-	public void remoteTrojanTest(){
-		//create a new computer 
-		HardwareComputer computer = new HardwareComputer("LINUX_MACHINE_SANDBOX_TEST");
-		//create a new linux host
-		Linux linuxHost = new Linux("LINUX_HOST_SANDBOX_TEST", computer);
-		//create a new trojan server in the linux host
-	    NetworkedApplication trojanServer = linuxHost.newNetworkedApplication("Trojan server", PrivilegeType.User, ProtocolType.TCP,false,true);
-	    //the trojan server create a vulnerability 
-	    Vulnerability trojanVuln = new Vulnerability("Trojan_Vuln",trojanServer, ImpactType.High);
-	    //add a vulnerability dropped by the trojan server in a guest user
-	    trojanServer.getGuest().addVulnerability(trojanVuln);
-	    //the trojan server spoof the administrator identity
-	    trojanVuln.addSpoofedIdentity(trojanServer.getAdministrator());
-	    //create an attacker
-	    Attacker attacker = new Attacker();
-	    //the attacker attacks the trojan server
-	    attacker.addAttackPoint(trojanServer.getAccess());
-	    //the attacker attacks the guest user used by the trojan server
-	    attacker.addAttackPoint(trojanServer.getGuest().getCompromise());
-	    //perform the attack
-	    attacker.attackWithTTC();
-	    //test the compromised by the trojan server administrator account
-	    TestSupport.assertCompromised(trojanServer.getAdministrator().getCompromise());
-	}
+    @Test
+    public void remoteTrojanTest() {
+        //create a new computer 
+        HardwareComputer computer = new HardwareComputer("LINUX_MACHINE_SANDBOX_TEST");
+        //create a new linux host
+        Linux linuxHost = new Linux("LINUX_HOST_SANDBOX_TEST", computer);
+        //create a new trojan server in the linux host
+        NetworkedApplication trojanServer = linuxHost.newNetworkedApplication("Trojan server", PrivilegeType.User, ProtocolType.TCP, false, true);
+        //the trojan server create a vulnerability 
+        Vulnerability trojanVuln = new Vulnerability("Trojan_Vuln", trojanServer, ImpactType.High);
+        //add a vulnerability dropped by the trojan server in a guest user
+        trojanServer.getUser().addVulnerability(trojanVuln);
+        //the trojan server spoof the administrator identity
+        trojanVuln.addSpoofedIdentity(trojanServer.getAdministrator());
+        //create an attacker
+        Attacker attacker = new Attacker();
+        //the attacker attacks the trojan server
+        attacker.addAttackPoint(trojanServer.getAccess());
+        //the attacker attacks the guest user used by the trojan server
+        attacker.addAttackPoint(trojanServer.getUser().getCompromise());
+        attacker.addAttackPoint(linuxHost.bob.getCompromise());
+        //perform the attack
+        attacker.attackWithTTC();
+        //test the compromised by the trojan server administrator account
+        TestSupport.assertCompromised(trojanServer.getAdministrator().getCompromise());
+        TestSupport.assertCompromised(linuxHost.bob.getCompromise());
+    }
 
     @After
     public void emptySets() {
-    	//clear the tests data after the tests executes
+        //clear the tests data after the tests executes
         Asset.clearAllAssets();
         AttackStep.clearAllAttackSteps();
     }
