@@ -26,9 +26,11 @@ import se.kth.ics.pwnpr3d.util.TestSupport;
  */
 
  /*
- * This test tries to simulate a denial of service on the router of the 
- * network using a compromised ip interface with flooded packages 
- * from the Linux machine.
+   What we have to achieve:
+   This test tries to simulate a denial of service on the router of the 
+   network using the CWE400 vulnerability (uncontrolled resource comsumption)
+   this deny of service on the router causes a denial of service on the host
+   because the host cannot use the network
  */
 
  /*
@@ -39,6 +41,7 @@ import se.kth.ics.pwnpr3d.util.TestSupport;
  * to the router until get a DOS from the router because it can't process
  * all these packages 
  */
+
 public class Linux_DenialOfServiceTest {
 
     @Test
@@ -87,7 +90,7 @@ public class Linux_DenialOfServiceTest {
         //deny the data
         attacker.addAttackPoint(dataShell.getDenyService());
         //compromise user bob
-        attacker.addAttackPoint(linuxHost.bob.getCompromise());
+        attacker.addAttackPoint(linuxHost.getDenyService());
         //we attack generating graphs
         attacker.attackWithTTC();
 
@@ -100,7 +103,7 @@ public class Linux_DenialOfServiceTest {
         //test the router deny service
         TestSupport.assertCompromised(router.getDenyService());
         //test the compromise of the user bob
-        TestSupport.assertCompromised(linuxHost.bob.getCompromise());
+        TestSupport.assertCompromised(linuxHost.getDenyService());
     }
 
     @After
