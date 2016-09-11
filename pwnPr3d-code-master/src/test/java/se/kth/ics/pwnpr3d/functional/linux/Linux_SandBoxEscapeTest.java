@@ -37,10 +37,14 @@ import se.kth.ics.pwnpr3d.util.TestSupport;
  */
 
  /*
- * The main problem faced here is simulate an application that have a
- * malicious behavior take access of the private data of other application
- * in the operative system so the first application compromises an user
- * account and the take the data of other application on the same user 
+ The main problem faced here is simulate an application that have a
+ malicious behavior take access of the private data of other
+ application in the operative system so the first application
+ compromises an user account and then take the data of other
+ application on the same user.
+ We solve this problen using a vulnerability in one of the
+ applications. and with this vulnerability ano application
+ gets access to the private data of the other application.
  * 
  */
 public class Linux_SandBoxEscapeTest {
