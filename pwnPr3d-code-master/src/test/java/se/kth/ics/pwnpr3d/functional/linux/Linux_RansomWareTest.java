@@ -31,16 +31,20 @@ import se.kth.ics.pwnpr3d.util.TestSupport;
  */
 
  /*
- * With this test the attacker get access in a compromised account and then make
- * a denial of service on the entire system.
+With this test the attacker get access in
+a compromised account and then make
+a denial of service on the entire system.
  */
 
  /*
- * The main problem here is to model a ransomware attack and basically a ransonmware 
- * drops a a malevolent software on the linux machine and this malevolent software
- * make a denial of service of the entire system to force the user to make a payment
- * with the promise to liberate the hostage machine.
- * 
+The main problem here is to model a ransomware attack and 
+basically a ransonmware drops a a malevolent software on the
+linux machine and this malevolent software make a denial of
+service of the entire system to force the user to make a payment
+with the promise to liberate the hostage machine.
+We solve this problen using a mail client on the bob user, bob
+have 50/50 chance of open the email attachment with the malicious
+software to install the ransonware.
  */
 public class Linux_RansomWareTest {
 
