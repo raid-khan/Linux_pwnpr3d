@@ -10,6 +10,7 @@ import se.kth.ics.pwnpr3d.layer1.Data;
 import se.kth.ics.pwnpr3d.layer1.Identity;
 import se.kth.ics.pwnpr3d.layer1.Vulnerability;
 import se.kth.ics.pwnpr3d.layer2.computer.HardwareComputer;
+import se.kth.ics.pwnpr3d.layer2.cwe.CWE290;
 import se.kth.ics.pwnpr3d.layer2.network.EthernetSwitch;
 import se.kth.ics.pwnpr3d.layer2.network.Router;
 import se.kth.ics.pwnpr3d.layer3.Linux;
@@ -24,19 +25,22 @@ import se.kth.ics.pwnpr3d.util.TestSupport;
  */
 
  /*
- * For this test we created a compromised switch and router and connect it to the Linux
- * machine, the attacker make the attack to the ip interface of the Linux machine
- * and we test the compromised switch and test an arp spoof exploit in the ip
- * interface of the Linux machine.
+ * What we have to achieve
+ * use a switch with a vulnerability to simulate an attcker making
+ * a sussesfull arp spoof in the switch of the network
  */
 
  /*
- *	The main problem faced here is to compromise the ip network interface 
- *  Through the router and the switch so we connect the network interface
- *  to these both appliances and then make the attacker make the attck to the ip
- *  interface of the linux machine also changing the user could make different
- *  results on the graphs of each test 
+ *  The main problem faced here is to simulate the CWE290 vulnerability
+ *  this vulnerability is a weakness living in the switch that have 
+ *  improper authentication mechanism and let the attaker performs the 
+ *  attack.
+ *  we solve this creating a new CWE and using it in the vulnerable switch
  */
+
+/*
+ * remains problems are 
+*/
 public class Linux_ARPSpoofTest {
 
     @Test
@@ -53,7 +57,7 @@ public class Linux_ARPSpoofTest {
         //add the data to the switch
         networkSwitch.addOwnedData(switchData);
         //We create the vulnerability
-        Vulnerability vulnerability = new Vulnerability("Switch Vulnerability", networkSwitch);
+        Vulnerability vulnerability = new CWE290(networkSwitch);
         //we add the data to the vulnerability
         vulnerability.addReadableData(switchData);
         //the user of the switch
