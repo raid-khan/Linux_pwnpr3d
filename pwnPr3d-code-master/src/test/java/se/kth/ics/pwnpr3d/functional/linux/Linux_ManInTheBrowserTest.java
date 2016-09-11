@@ -3,14 +3,18 @@ package se.kth.ics.pwnpr3d.functional.linux;
 import org.junit.After;
 import org.junit.Test;
 
+import se.kth.ics.pwnpr3d.datatypes.AccessVectorType;
 import se.kth.ics.pwnpr3d.datatypes.PrivilegeType;
 import se.kth.ics.pwnpr3d.datatypes.ProtocolType;
 import se.kth.ics.pwnpr3d.layer0.Asset;
 import se.kth.ics.pwnpr3d.layer0.AttackStep;
 import se.kth.ics.pwnpr3d.layer0.Attacker;
 import se.kth.ics.pwnpr3d.layer1.Data;
+import se.kth.ics.pwnpr3d.layer1.Identity;
 import se.kth.ics.pwnpr3d.layer1.Message;
+import se.kth.ics.pwnpr3d.layer1.Vulnerability;
 import se.kth.ics.pwnpr3d.layer2.computer.HardwareComputer;
+import se.kth.ics.pwnpr3d.layer2.cwe.CWE296;
 import se.kth.ics.pwnpr3d.layer2.network.EthernetSwitch;
 import se.kth.ics.pwnpr3d.layer2.software.NetworkedApplication;
 import se.kth.ics.pwnpr3d.layer2.software.OperatingSystem;
@@ -29,28 +33,27 @@ import se.kth.ics.pwnpr3d.util.TestSupport;
  * programs display distinctive vulnerabilities that can be effectively abused
  * by a system written in JavaScript or comparative scripting dialect.
  */
-/*
+ /*
  * In this test a malevolent server drops evil scripts on the browser to compromise
  * the security of the network interface and get access and sniff the http traffic
  * over the compromised ip interface.
  */
 
-/*
+ /*
  * The main problem faced here is to compromise the browser of the linux host
  * to do that the attacker uses an html server to get access to the firefox browser
  * then compromise the admin account using the firefox browser
  */
-
 public class Linux_ManInTheBrowserTest {
 
-	@Test
-	public void testManInTheBrowser(){
-		//create a new computer
-		HardwareComputer computer = new HardwareComputer("LINUX_MACHINE_MAN_BROWSER");
-		//create a new linux host
-		Linux linuxHost = new Linux("LINUX_HOST_MAN_BROWSER", computer);
+    @Test
+    public void testManInTheBrowser() {
+        //create a new computer
+        HardwareComputer computer = new HardwareComputer("LINUX_MACHINE_MAN_BROWSER");
+        //create a new linux host
+        Linux linuxHost = new Linux("LINUX_HOST_MAN_BROWSER", computer);
 
-		//create a new networked application firefox
+        //create a new networked application firefox
         NetworkedApplication linuxFirefox = linuxHost.newNetworkedApplication("LINUX_FIREFOX", PrivilegeType.User, ProtocolType.TCP, false, true);
 
         //create a server computer
@@ -69,6 +72,11 @@ public class Linux_ManInTheBrowserTest {
         Message message = linuxFirefox.newMessage(new Data("MESSAGE", false));
         //send the message
         linuxFirefox.sendMessage(message);
+
+        Vulnerability firefox_vuln = new CWE296(linuxFirefox, PrivilegeType.User, AccessVectorType.Network);
+        firefox_vuln.addSpoofedIdentity(new Identity("ManInBrowser", linuxFirefox));
+        linuxFirefox.getPrivilegesOnOS().addVulnerability(firefox_vuln);
+
         //create an attacker
         Attacker attacker = new Attacker();
         //the attacker get access to firefox
@@ -79,7 +87,7 @@ public class Linux_ManInTheBrowserTest {
         attacker.attackWithTTC();
         //test the Ethernet implementation of the Linux client 
         TestSupport.assertCompromised(linuxHost.getIPEthernetARPNetworkInterface().getEthernetImplementation().getCompromise());
-        //test the compromised of a guest use5r in the Ethernet implementation
+        //test the compromised of a guest use	r in the Ethernet implementation
         TestSupport.assertCompromised(linuxHost.getIPEthernetARPNetworkInterface().getEthernetImplementation().getGuest().getCompromise());
         //test the compromised Ethernet implementation of the guest user in the switch 
         TestSupport.assertCompromised(ethernetSwitch.getEthernetImplementation().getGuest().getCompromise());
@@ -95,13 +103,13 @@ public class Linux_ManInTheBrowserTest {
         //test the compromised Linux firefox client 
         TestSupport.assertCompromised(linuxFirefox.getAdministrator().getCompromise());
 
-	}
-	
+    }
+
     @After
     public void emptySets() {
-    	//clear the tests data after the tests executes
+        //clear the tests data after the tests executes
         Asset.clearAllAssets();
         AttackStep.clearAllAttackSteps();
     }
-	
+
 }
