@@ -34,15 +34,17 @@ import se.kth.ics.pwnpr3d.util.TestSupport;
  * by a system written in JavaScript or comparative scripting dialect.
  */
  /*
- * In this test a malevolent server drops evil scripts on the browser to compromise
- * the security of the network interface and get access and sniff the http traffic
- * over the compromised ip interface.
+ In this test a malevolent server uses an improper certificate chain of
+ trust using the CWE296 vulnerabilty present in the browser to compromise
+ the security of the network interface and get access and sniff the 
+ http traffic over the compromised ip interface.
  */
 
  /*
- * The main problem faced here is to compromise the browser of the linux host
- * to do that the attacker uses an html server to get access to the firefox browser
- * then compromise the admin account using the firefox browser
+ The main problem faced here is to compromise the browser of the linux host
+ to do that the attacker uses an html server to get access to the firefox 
+ browser then compromise the admin account using the firefox browser
+ We solve this introducing the CWE296 vulnerability in the browser
  */
 public class Linux_ManInTheBrowserTest {
 
@@ -87,7 +89,7 @@ public class Linux_ManInTheBrowserTest {
         attacker.attackWithTTC();
         //test the Ethernet implementation of the Linux client 
         TestSupport.assertCompromised(linuxHost.getIPEthernetARPNetworkInterface().getEthernetImplementation().getCompromise());
-        //test the compromised of a guest use	r in the Ethernet implementation
+        //test the compromised of a guest use5r in the Ethernet implementation
         TestSupport.assertCompromised(linuxHost.getIPEthernetARPNetworkInterface().getEthernetImplementation().getGuest().getCompromise());
         //test the compromised Ethernet implementation of the guest user in the switch 
         TestSupport.assertCompromised(ethernetSwitch.getEthernetImplementation().getGuest().getCompromise());
