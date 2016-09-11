@@ -9,8 +9,10 @@ import se.kth.ics.pwnpr3d.layer0.Asset;
 import se.kth.ics.pwnpr3d.layer0.AttackStep;
 import se.kth.ics.pwnpr3d.layer0.Attacker;
 import se.kth.ics.pwnpr3d.layer1.Data;
+import se.kth.ics.pwnpr3d.layer1.Identity;
 import se.kth.ics.pwnpr3d.layer1.Information;
 import se.kth.ics.pwnpr3d.layer1.Message;
+import se.kth.ics.pwnpr3d.layer1.Vulnerability;
 import se.kth.ics.pwnpr3d.layer2.computer.HardwareComputer;
 import se.kth.ics.pwnpr3d.layer2.network.EthernetSwitch;
 import se.kth.ics.pwnpr3d.layer2.network.Router;
@@ -26,28 +28,28 @@ import se.kth.ics.pwnpr3d.util.TestSupport;
  * the more it can prolong to break. 
  */
 
-/*
+ /*
  * In this test the attacker tries to un-encrypt the packages on a compromised
  * switch using a brute force attack to read the encrypted data.
  */
 
-/*
+ /*
  * The main problem faced here is to connect to the switch and try to brute
  * force the encrypted packages. To do that the attacker gets access to the
  * admin account in the switch and then the attacker get the messages to decript them
  *  
-*/
+ */
 public class Linux_EncryptionBruteForceTest {
 
     @Test
     public void testEncryptionBruteForce() {
 
-    	//we create a new router
+        //we create a new router
         Router router = new Router("router");
         //we create a new Ethernet switch
         EthernetSwitch ethSwitch = new EthernetSwitch("ethernetSwitch");
 
-    	//we create a new computer
+        //we create a new computer
         HardwareComputer computer = new HardwareComputer("LINUX_MACHINE");
         //we create a new linux host
         Linux linuxHost = new Linux("LINUX_HOST", computer);
@@ -59,22 +61,30 @@ public class Linux_EncryptionBruteForceTest {
         //create a new information
         Information information = new Information("information", 10, 1000, 100);
         //create a new encrypted data
-        Data encryptedData = new Data("Encrypted-Data",true);
+        Data encryptedData = new Data("Encrypted-Data", true);
         //add the data to the information
         information.addRepresentingData(encryptedData);
         //create a new network message with the encripted data
         Message message = linuxHost.getIPEthernetARPNetworkInterface().newMessage(encryptedData);
         //send the message over the network
         linuxHost.getIPEthernetARPNetworkInterface().sendMessage(message);
+        //We create the vulnerability
+        Vulnerability vulnerability = new Vulnerability("Switch Vulnerability", ethSwitch);
+        //we add the data to the vulnerability
+        vulnerability.addReadableData(encryptedData);
+        //the user of the switch
+        ethSwitch.getUser().addGrantedIdentity(new Identity("SwitchUser", ethSwitch));
+        //we add the vulnerability to the networked application
+        ethSwitch.getUser().addVulnerability(vulnerability);
+
         //create an attacker
         Attacker attacker = new Attacker();
         //add an attack point in the switch
         attacker.addAttackPoint(ethSwitch.getAccess());
-        //get access to the switch
-        attacker.addAttackPoint(ethSwitch.getAdministrator().getCompromise());
-        //get the compromised administrator in the switch
-        attacker.attackWithTTC();
+        //attack the compromised bob account due to the un-encrypted packages
+        attacker.addAttackPoint(linuxHost.bob.getCompromise());
         //attack generating the graphs
+        attacker.attackWithTTC();
 
         //test the compromised Linux host
         TestSupport.assertCompromised(linuxHost.getCompromise());
@@ -94,14 +104,14 @@ public class Linux_EncryptionBruteForceTest {
         TestSupport.assertCompromised(ethSwitch.getOwnedData().iterator().next().getCompromiseRead());
         //test a compromised read of the data on the switch
         TestSupport.assertCompromised(message.getCompromiseRead());
-    
+
     }
 
     @After
     public void emptySets() {
-    	//clear the tests data after the tests executes
+        //clear the tests data after the tests executes
         Asset.clearAllAssets();
         AttackStep.clearAllAttackSteps();
     }
-	
+
 }
